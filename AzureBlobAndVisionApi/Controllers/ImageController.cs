@@ -19,19 +19,19 @@ namespace AzureBlobAndVisionApi.Controllers
         [Route("upload")]
         public async Task<string> PostAsync(IFormFile file)
         {
-            if (file != null && file.ContentType.StartsWith("image"))
-            {
-                var stream = file.OpenReadStream();
-                //var name = Path.GetFileName(file.FileName);
-                var name = Convert.ToString(Guid.NewGuid()) + ".jpg";
-                var uploadfile = await Upload.UploadFileAsBlob(stream, name);
-
-                return uploadfile;
-            }
-            return null;
+            
+            BlobManager manager =new BlobManager();
+            var imageUrl = manager.UploadImageAsBlob(file);
+            return await imageUrl;
         }
 
-       
 
+        [HttpGet]
+        public async Task<List<Images>> Get(string req)
+        {
+            BlobManager manager = new BlobManager();
+            List<Images> img = await manager.GetImagesAsync(req);
+            return img;
+        }
     }
 }
